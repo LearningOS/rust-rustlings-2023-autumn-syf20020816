@@ -16,7 +16,14 @@
 //
 // Execute `rustlings hint quiz3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+use std::collections::HashMap;
+trait ScoreNumber {
+    fn print(&self) -> String;
+}
+
+trait ScoreGrade {
+    fn print(&self) -> String;
+}
 
 pub struct ReportCard {
     pub grade: f32,
@@ -24,10 +31,27 @@ pub struct ReportCard {
     pub student_age: u8,
 }
 
-impl ReportCard {
-    pub fn print(&self) -> String {
-        format!("{} ({}) - achieved a grade of {}",
-            &self.student_name, &self.student_age, &self.grade)
+impl ScoreNumber for ReportCard {
+    fn print(&self) -> String {
+        format!(
+            "{} ({}) - achieved a grade of {}",
+            &self.student_name, &self.student_age, &self.grade
+        )
+    }
+}
+
+impl ScoreGrade for ReportCard {
+    fn print(&self) -> String {
+        let grades = vec![
+            "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "E+", "E", "E-",
+            "F+", "F", "F-",
+        ];
+        let adding = ((self.grade - 1.0) / 0.25) as usize;
+
+        format!(
+            "{} ({}) - achieved a grade of {}",
+            &self.student_name, &self.student_age, grades[adding]
+        )
     }
 }
 
@@ -43,7 +67,7 @@ mod tests {
             student_age: 12,
         };
         assert_eq!(
-            report_card.print(),
+            ScoreNumber::print(&report_card),
             "Tom Wriggle (12) - achieved a grade of 2.1"
         );
     }
@@ -57,8 +81,8 @@ mod tests {
             student_age: 11,
         };
         assert_eq!(
-            report_card.print(),
-            "Gary Plotter (11) - achieved a grade of A+"
+            ScoreGrade::print(&report_card),
+            "Gary Plotter (11) - achieved a grade of B"
         );
     }
 }
